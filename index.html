@@ -235,6 +235,7 @@
         font-size: 13;
         color: #78909c;
         box-shadow: 2px 2px 6px black;
+        z-index: 5;
       }
       .sb1::before  {
         content: " ";
@@ -271,14 +272,13 @@
       }
       #baseSVG {
         position: relative;
-        z-index: 1
       }
       #lineChart{
         position: absolute;
       }
       #barOverlay{
         position: absolute;
-          z-index: 10
+        z-index: 1
       }
 
 
@@ -352,7 +352,7 @@ let PageNum = annCont.append("svg").attr("id","pageNum")
 PageNum.append("svg:image")
   .attr("width","100%")
   .attr("height","100%")
-  .attr("xlink:href", "penCircle.PNG")
+  .attr("xlink:href", "PenCircle.PNG")
 
 
 let nextButtonSize = 38
