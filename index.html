@@ -278,6 +278,7 @@
       }
       #barOverlay{
         position: absolute;
+        top: 45; /*lineMargin.top*/
         z-index: 1
       }
 
@@ -790,7 +791,7 @@ drawBars = function(data,scales){
             //
 
           //Hide bars on hover
-          barOverlay = d3.select("#lineChartCont").append("svg").attr("id","barOverlay").attr("width",400).attr("height",lineHeight).attr("x",0).attr("y",lineMargin.top)
+          barOverlay = d3.select("#lineChartCont").append("svg").attr("id","barOverlay").attr("width",400).attr("height",lineHeight)
 
           barOverlay.on("mouseover", function(){
             svg.selectAll("rect")
@@ -1352,6 +1353,7 @@ shuffleData = function(data,scales){
         .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",200)
         .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 200 - 20 + 10 - 5) //300 = SpeechBubble width; 20 = ArrowWidth; 10 = HistoMargin; 5 = Additional Spacing
         .style("top",d3.select("#histoChart").node().offsetTop + speechPointOffset + 20) //20 = manual vertical positioning
+        .style("margin-left", 0)
         .append("span").text("If >95% of the simulations have a lower score than the original trend, then we can be confident of a change-point....")
       // setTimeout(function(){
       //   speech = d3.select("#mainView")
@@ -1569,7 +1571,11 @@ function cpResult(){
     .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",200)
     .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 200 - 20 + 10 - 5) //300 = SpeechBubble width; 20 = ArrowWidth; 10 = HistoMargin; 5 = Additional Spacing
     .style("top",d3.select("#histoChart").node().offsetTop + speechPointOffset + 20) //20 = manual vertical positioning
+    .style("margin-left", 0)
     .append("span").text(cpResultText)
+
+  d3.select("#speechDiv")
+  .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
 }
 
 cpLine = function(data,scales){
