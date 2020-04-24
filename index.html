@@ -1,292 +1,12 @@
 <html>
 
 <head>
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Caveat"
-          href="https://fonts.googleapis.com/css?family=Bitter">
-    <style>
-      /*CSS Styling*/
-      .line {
-      stroke-width: 1px;
-      stroke: grey;
-      fill: none
-      }
-      .mean {
-      stroke-width: 1px;
-      stroke: black;
-      }
-      .canvas {
-      display:flex;
-      flex-direction: column;
-      }
-      .subdiv {
-      display:flex;
-      flex-direction: row;
-      }
-      .bottomContainer {
-      display:flex;
-      flex-direction: column;
-      }
-      .over {
-      fill: url(#gradient)
-      }
-      .under {
-      fill: #233240
-      }
-      #histo-container {
-      margin-left: 10px;
-      }
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter">
 
-      h1, h2, h3, h4, h5, h6 {
-        font-family: "Bitter";
-        fill: #2c3e50;
-      }
-      .lab-text {
-        fill: #78909c;
-        font-size: 13px;
-        font-family: "Bitter"
-      }
-      .num-text {
-        fill: #78909c;
-        font-family: "Bitter"
-      }
-      #lineChartCont {
-        background: #F7F8F9;
-        border: 1px solid #d9d9db;
-        border-radius: 10px;
-        position: relative;
-      }
-      .annotation-note-label {
-        fill: #78909c;
-        font-size: 13px;
-        font-family: "Bitter"
-      }
-      .subject,.note-line,.connector {
-        /* stroke: white; */
-        stroke-width: 1.2px;
-      }
-      #mainView {
-        padding-top: 20px;
-        padding-left: 20px;
-      }
-      #topView {
-        padding-bottom: 20px;
-      }
-      #title {
-        color: #2c3e50;
-        font-size: 23px;
-        font-family: "Bitter";
-        padding-bottom: 10px;
-      }
-      #AnnWindow, #pageNum{
-        font-family: "Caveat";
-        font-size: 22px;
-      }
-      @keyframes fadein {
-        from { opacity: 0; }
-        to   { opacity: 1; }
-      }
-      #hG {
-        font-size: 20px;
-        animation: fadein 2s;
-      }
-      .histo-lab {
-        fill: #9d9d9d;
-        font-family: "Bitter";
-        font-size: 13px;
-        letter-spacing: 1.5px;
-        transform: rotate(90deg);
-      }
-      #histo-container {
-        border: 0px;
-        border-radius: 10px;
-      }
-      .histoBackground {
-        fill: url(#histoGrad);
-      }
-      #annCont {
-        margin-left: 20px;
-        height: 250px;
-        width: 400px;
-        background: no-repeat left/100% 100% url('Paper.PNG');
-        position: relative;
-        min-width: 400px;
-      }
-      @keyframes glowing {
-        0% { fill: #dadada;  }
-        50% { fill: #ababac;  }
-        100% { fill: #dadada; }
-      }
-      #nextButton {
-        position: absolute;
-        bottom: 6px; right: 5px;
-      }
-      .nextButton-ready {
-        animation: glowing 1500ms infinite  !important;
-      }
-      .nextButton-waiting {
-        fill: #dadada;
-      }
-      .noClick{
-        pointer-events: none;
-      }
-      #nextText {
-        transform-origin: right top;
-        transform: rotate(315deg);
-        font-family: "Caveat";
-        font-size: 20px;
-        fill: white;
-        user-select: none;
-      }
-      #toggleBars {
-        position: absolute; right:5; top:5;
-      }
-      .callout {
-        font-family: "Caveat";
-        font-size: 20px;
-        font-weight: 100;
-      }
-      .shuffle-button {
-        background: linear-gradient(to left, rgba(0,0,0,0) 50%, rgba(230, 242, 255,1) 50%);
-        background-size: 200% 100%;
-        background-position:right bottom;
-        transition:all 0.4s ease;
-      }
-      .shuffle-button:hover {
-        background-position:left bottom;
-      }
-      .shuffle-button:active {
-        background: linear-gradient(to left, rgba(92,108,124,1)  50%, rgba(92,108,124,1) 50%)
-      }
-      .shuffle-text {
-        user-select: none;
-        font-family: "Caveat";
-        font-size: 20px;
-      }
-      .shuffle-button:active > .shuffle-text{
-        fill: white;
-      }
-      #pageNum {
-        position: absolute;
-        top: 5px; right: 9px;
-      }
-      #annWindow {
-        position: absolute;
-        top: 32px; left: 55px;
-      }
-      #buttonG {
-        position: absolute;
-        top: 40%; left: 20%;
-      }
-      #autoButton {
-        margin-left: 20px
-      }
-      #resetButton {
-        position: absolute;
-        top:2%; right:2%;
-        border-radius: 50%;
-        border: 1px solid rgba(0,0,0,0.1);
-      }
-      #arrow {
-        transform-origin: 20px 55px;
-        transform: rotate(40deg);
-        offset-path:path('M27,30');
-        pointer-events: none;
-      }
-      #circle {
-        pointer-events: none;
-      }
-
-      @keyframes move {
-        100% {offset-distance: 100%;}
-      }
-      #resetButton:hover #arrow{
-        transform-origin: 20px 55px;
-        transform: rotate(-85deg);
-        offset-path: path('M20 50, A30 30, 0, 0 0, 80 50, A30 30, 0, 0 0, 27 30');
-        animation: move 0.7s linear forwards;
-      }
-      #resetButton:active {
-        background-color: darkgrey;
-      }
-      #resetButton:active #circle{
-        stroke: white;
-      }
-      #resetButton:active #arrow{
-        fill: white;
-      }
-      #firstSimAnn {
-        white-space: pre;
-      }
-
-      #mainView {
-        position: relative;
-      }
-      .speech-box{
-        position: absolute;
-        padding: 13px;
-        margin-left: 20px;
-        margin-top: -10px;
-        background: #F7F8F9;
-        border-radius: 10px;
-        width: 300px;
-        line-height: 100%;
-        font-family: Bitter;
-        font-size: 13;
-        color: #78909c;
-        box-shadow: 2px 2px 6px black;
-        z-index: 5;
-      }
-      .sb1::before  {
-        content: " ";
-        width: 0px;
-        height: 0px;
-        position: absolute;
-        border-right: 20px solid #F7F8F9;
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        left: -20px;
-        top: 50%;
-        margin-top: -10px
-      }
-      .sb2::before  {
-        content: " ";
-        width: 0px;
-        height: 0px;
-        position: absolute;
-        border-left: 20px solid #F7F8F9;
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        right: -20px;
-        top: 50%;
-        margin-top: -10px
-      }
-      .lower-higher {
-       background-color: #2c3e50;
-       color: #78909c;
-      }
-      .segment-lab {
-        font-family: Bitter;
-        font-size: 13;
-        fill: #474747;
-      }
-      #baseSVG {
-        position: relative;
-      }
-      #lineChart{
-        position: absolute;
-      }
-      #barOverlay{
-        position: absolute;
-        top: 45; /*lineMargin.top*/
-        z-index: 1
-      }
-
-
-
-
-
-    </style>
+    <!-- Custom CSS styles -->
+    <link href="style.css" rel="stylesheet" type="text/css">
 
   <!-- Load d3 -->
   <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -299,9 +19,6 @@
 
 <body>
 
-<!--<div class="btn-group" role="group" aria-label="Basic example">
-	<button type="button" class="btn btn-primary" id="shuffleBatch" >start</button>
-</div>-->
   <div id="mainView" class = "canvas">
       <div id="title">ChangePoint Analysis</div>
       <div id="topView" class = "subdiv">
@@ -569,8 +286,6 @@ stepSequencer = function(dict,scales){
         .append("text").attr("class","ann2")
         .attr("text-anchor","left")
         .text("Calculate the deviations from mean")
-      //  .transition().duration(800)
-      //  .attr("opacity",1)
         .attr("dy","1em")
     //    .on("end", function(){
             drawMeanLine(dict,scales);
@@ -594,6 +309,7 @@ stepSequencer = function(dict,scales){
       d3.selectAll(".ann2").remove();
       PageNum.select("text").text("3");
       wait();
+
       AnnWindow
         .append("text").attr("class","ann3")
         .attr("text-anchor","left")
@@ -609,14 +325,22 @@ stepSequencer = function(dict,scales){
       step = 4;
 
     } else if (step == 4) {
+      wait();
       animateWaterfall(rsData, scales);
       step = 5;
 
     } else if (step == 5){
-        AnnWindow.append("text").attr("class","ann3")
-          .text("The change-point score alone doesn't tell us if the change is real or not. To infer this, we need to ask: could a score this high have simply have resulted from chance orderings of data points (i.e. was it a fluke)?")
-          .attr("dy","4.8em")
+        test = AnnWindow.append("text").attr("class","ann3")
+          .text("The change-point score alone doesn't tell us if the change is real or not.")
+          .attr("dy","4em")
           .call(wrap,300)
+        test.append("tspan")
+          .text("We need to ask: could a score this high have simply have resulted from chance orderings of data points, i.e. by fluke?")
+          .call(wrap,300)
+          .attr("dy","1.5em").attr("x",0)
+          .attr("opacity",0)
+          .transition().duration(1000).delay(1500)
+            .attr("opacity",1)
         step = 6;
 
     } else if (step == 6){
@@ -632,6 +356,8 @@ stepSequencer = function(dict,scales){
        step = 7;
 
     } else if (step == 7){
+      wait();
+
       buttonWidth = 100;
       buttonHeight = 30;
 
@@ -769,7 +495,6 @@ drawBars = function(data,scales){
               },500)
               setTimeout(function(){
                 d3.select("#negMask").transition().ease(d3.easeExp).duration(1000).attr("width",0).remove();
-                ready();
               },1200)
 
             //
@@ -788,6 +513,7 @@ drawBars = function(data,scales){
             .attr("opacity",0)
             .transition().duration(1000).delay(2000)
             .attr("opacity",1)
+            .on("end",ready)
             //
 
           //Hide bars on hover
@@ -991,24 +717,11 @@ animateWaterfall = function(data, scales){
       yScaleCUSUM.domain([d3.min(rsData2,d => Math.min(d.end, d.start)) , d3.max(rsData2,d => Math.max(d.end, d.start)) * 1.6])
       yScaleCSMheight.domain([0 , (d3.max(rsData2,d => Math.max(d.end, d.start))*1.6) - d3.min(rsData2,d => Math.min(d.end, d.start))])
 
-      //5th delta in sequence of 5 positives
-      // if (cumPos < 5) {
-      //   rsData[clickCount].delta > 0 ? cumPos++ : cumPos=0;
-      //   cumPos == 5 ? posIndex = clickCount : null;
-      // }
-      //5th delta in sequence of 5 negatives
       if (cumNeg > -6 && clickCount > 45) {
         rsData[clickCount].delta < 0 ? cumNeg-- : cumNeg++;
         cumNeg > 0 ? cumNeg = 0 : cumNeg;
         cumNeg == -6 ? negIndex = clickCount : null;
       }
-      //10th delta in sequence where the momentum was relatively neutral
-      // if (neuCount < 10 && clickCount >55) {
-      //   rsData[clickCount].delta > 0 ? cumNeu++ : cumNeu--;
-      //   cumNeu > 3 || cumNeu <-3 ? neuCount=0: neuCount ++;
-      //   cumNeu > 3 || cumNeu <-3 ? cumNeu=0: cumNeu;
-      //   neuCount == 10 ? neuIndex = clickCount+1 : null;
-      // }
 
       clickCount ++
 
@@ -1087,11 +800,7 @@ cusumMax = function(scales){
     .attr("opacity", 1)
     .on("end",function(){ready()})
 
-  // xScaleHeightInit = d3.scaleBand()
-  //                     .domain(d3.range(100).reverse())
-  //                     .range([0,w])
-  //
-  //
+
   xScaleHeight = d3.scaleBand()
                       .domain(d3.range(cusumHeights.length))
                       .range([w,w*2])
@@ -1247,7 +956,7 @@ shuffleData = function(data,scales){
           .style("left",w+20).style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(rsMax) + speechPointOffset)
           .append("span")
           .text("The shuffled trend has a ")
-          speech.append("span").text(higherLower) //.attr("class","lower-higher")
+          speech.append("span").text(higherLower).attr("class","lower-higher")
           speech.append("span").text(" score than the original trend")
           //speech.append("span").text(`(${Math.round(rsMax*10)/10})`).style("font-weight",900)
           speech.append("br")
@@ -1354,14 +1063,14 @@ shuffleData = function(data,scales){
         .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 200 - 20 + 10 - 5) //300 = SpeechBubble width; 20 = ArrowWidth; 10 = HistoMargin; 5 = Additional Spacing
         .style("top",d3.select("#histoChart").node().offsetTop + speechPointOffset + 20) //20 = manual vertical positioning
         .style("margin-left", 0)
-        .append("span").text("If >95% of the simulations have a lower score than the original trend, then we can be confident of a change-point....")
-      // setTimeout(function(){
-      //   speech = d3.select("#mainView")
-      //     .append("div").attr("class","speech-box sb2").style("width",250)
-      //     .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 250 - 20 + 10 - 5)
-      //     .style("top",d3.select("#histoChart").node().offsetTop + h - 70) //100 = manual vertical positioning
-      //     .append("span").text("However, to make this call, > ~1000 simulations are needed to approximate the full distribution of potential scores.")
-      // },4000)
+        .append("span").text("If the overwhelming majority (e.g. >95%) of random shuffles 🎲 have a lower score than the original trend, then we can be confident a change-point exists....")
+      setTimeout(function(){
+        speech = d3.select("#mainView")
+          .append("div").attr("class","speech-box sb2").style("width",250)
+          .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 250 - 20 + 10 - 5)
+          .style("top",d3.select("#histoChart").node().offsetTop + h - 70) //100 = manual vertical positioning
+          .append("span").text("However, lots of simulations (at least 1000) are needed to estimate the full distribution of potential scores. Keep Shuffling!")
+      },4000)
 
       d3.select("#speechDiv")
       .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
@@ -1369,6 +1078,8 @@ shuffleData = function(data,scales){
 
     //Show automateShuffle button
     if (shuffleCount == 6) {
+      speech.remove();
+
       function shuffleButton2(){
         ShuffleButton2 = buttonG.append("svg")
           .attr("class","shuffle-button").attr("id","autoButton")
@@ -1408,7 +1119,6 @@ shuffleData = function(data,scales){
 
 shuffleInterval = function(dict,scales){
 
-
     d3.select("#autoButton").on("click", function(){
       automate =! automate
       shuffleSpeed = 90; sampleSize = 1000;
@@ -1429,22 +1139,6 @@ shuffleInterval = function(dict,scales){
         d3.select("#autoText").text("Auto-Shuffle");
       }
     })
-    //   d3.select("#autoButton").on("click", function(){
-    //     automate =! automate
-    //
-    //     if (automate){
-    //       resetOrig();
-    //       inter = setInterval(function() {
-    //         automateShuffle(dict,scales);
-    //         if (shuffleCount == sampleSize) {clearInterval(inter);cpLine(dict,scales);};
-    //       }, shuffleSpeed);
-    //       d3.select("#autoText").text("Pause");
-    //     } else {
-    //       clearInterval(inter);
-    //       d3.select("#autoText").text("Auto-Shuffle");
-    //     }
-    //   })
-    // }
 
   }
 
