@@ -1066,7 +1066,7 @@ shuffleData = function(data,scales){
         .append("span").text("If the overwhelming majority (e.g. >95%) of random shuffles 🎲 have a lower score than the original trend, then we can be confident a change-point exists....")
       setTimeout(function(){
         speech = d3.select("#mainView")
-          .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",250)
+          .append("div").attr("id","speechDiv2").attr("class","speech-box sb2").style("width",250)
           .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 250 - 20 + 10 - 5)
           .style("top",d3.select("#histoChart").node().offsetTop + h - 70) //100 = manual vertical positioning
           .append("span").text("However, lots of simulations (at least 1000) are needed to estimate the full distribution of potential scores. Keep Shuffling!")
@@ -1078,7 +1078,7 @@ shuffleData = function(data,scales){
 
     //Show automateShuffle button
     if (shuffleCount == 6) {
-      d3.select("#speechDiv").remove();
+      d3.select("#speechDiv2").remove();
 
       function shuffleButton2(){
         ShuffleButton2 = buttonG.append("svg")
