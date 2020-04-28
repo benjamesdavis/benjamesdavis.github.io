@@ -229,6 +229,21 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 2px 2px 6px black;
   z-index: 5;
 }
+.speech-box-white{
+  position: absolute;
+  padding: 13px;
+  margin-left: 0px;
+  margin-top: -10px;
+  background: white;
+  border-radius: 10px;
+  width: 200px;
+  line-height: 100%;
+  font-family: Bitter;
+  font-size: 13;
+  color: #78909c;
+  box-shadow: 2px 2px 10px #9a9a9a;
+  z-index: 5;
+}
 .sb1::before  {
   content: " ";
   width: 0px;
@@ -273,4 +288,19 @@ h1, h2, h3, h4, h5, h6 {
   position: absolute;
   top: 45; /*lineMargin.top*/
   z-index: 1
+}
+.chart-label{
+  position: absolute;
+  font-family: Bitter;
+  font-size: 15;
+  top: 8px; left: 8px
+}
+#cusumSvg{
+  border-style: "solid";
+  border-width: 0px;
+  border-radius: 10px;
+  background-color: #2c3e50
+}
+#cusumView{
+  position: relative;
 }
