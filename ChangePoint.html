@@ -31,6 +31,7 @@
         <!-- <h5>Simulation statistics</h5> -->
         <div id="bottomView" class = "subdiv">
           <div id="cusumView"></div>
+          <div id="scoresView"></div>
           <div id="histoView" class = "subdiv">
             <div id="histoChart"></div>
             <div id="histoLab"></div>
@@ -94,7 +95,7 @@ let nextButton = annCont
 // CUSUM Setup ----------------
 let cusumSvg = d3.select("#cusumView")
   .append("svg").attr("id","cusumSvg")
-  .attr("width", w*2)
+  .attr("width", w)
   .attr("height", h)
 
 d3.select("#cusumView")
@@ -102,6 +103,20 @@ d3.select("#cusumView")
   .text("Cumualative Sum of Deltas")
   .attr("class","chart-label")
   .style("color","#78909c")
+
+let scoresSvg = d3.select("#scoresView")
+  .append("svg").attr("id","scoresSvg")
+  .attr("width", w)
+  .attr("height", h)
+  .style("margin-left",10)
+
+d3.select("#scoresView")
+  .append("text")
+  .text("Simulation Scores")
+  .attr("class","chart-label")
+  .style("color","#78909c")
+  .style("left",10+8)
+
 
 var gradient = svg.append("linearGradient").attr("id","gradient").attr("x1","0").attr("x2","0").attr("y1","0").attr("y2","1")
   gradient.append('stop').attr('stop-color', d3.rgb("#78909c")).attr('offset', '0%');
@@ -942,6 +957,15 @@ shuffleData = function(data,scales){
         cusumSvg.select("line")
       		.attr("x2",w*2)
           .attr("stroke-dasharray",[5,5])
+
+        scoresSvg.append("line")
+          .attr("x1",0)
+      		.attr("x2",w+10)
+          .attr("y1",yScaleCUSUM(rsMax))
+          .attr("y2",yScaleCUSUM(rsMax))
+          .attr("stroke-dasharray",[5,5])
+          .attr("stroke","white")
+
 
         d3.select("#histoMX")
           .select("line")
