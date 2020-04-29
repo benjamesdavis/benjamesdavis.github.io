@@ -295,12 +295,13 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 15;
   top: 8px; left: 8px
 }
-#cusumSvg{
-  border-style: "solid";
-  border-width: 0px;
+#cusumSvg,#scoresSvg,#histoSVG{
+  border-style: solid;
+  border-width: 2px;
+  border-color: #121a22;
   border-radius: 10px;
   background-color: #2c3e50
 }
-#cusumView{
+#cusumView,#scoresView{
   position: relative;
 }
