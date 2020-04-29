@@ -109,19 +109,20 @@ var gradient = svg.append("linearGradient").attr("id","gradient").attr("x1","0")
   gradient.append('stop').attr('stop-color', d3.rgb("#233240")).attr('offset', '95%');
 
 // Histogram Setup -----------
-histoWidth = 125
+histoWidth = 110
 let histoSVG = d3.select("#histoChart")
   .append("svg")
-  .attr("id","histo-container")
+  .attr("id","histoSVG")
   .attr("width",histoWidth)
   .attr("height",h)
-let histoBackground = histoSVG.append("rect")
-  .attr("class","histoBackground")
-  .attr("width",histoWidth)
-  .attr("height",h)
-var histoGradient = histoSVG.append("linearGradient").attr("id","histoGrad").attr("x1","0").attr("x2","1").attr("y1","0").attr("y2","0")
-  histoGradient.append('stop').attr('stop-color', d3.rgb("#2c3e50")).attr('offset', '84%');
-  histoGradient.append('stop').attr('stop-color', d3.rgb("#d9d9db")).attr('offset', '16%');
+  .style("margin-left",10)
+// let histoBackground = histoSVG.append("rect")
+//   .attr("class","histoBackground")
+//   .attr("width",histoWidth)
+//   .attr("height",h)
+// var histoGradient = histoSVG.append("linearGradient").attr("id","histoGrad").attr("x1","0").attr("x2","1").attr("y1","0").attr("y2","0")
+//   histoGradient.append('stop').attr('stop-color', d3.rgb("#2c3e50")).attr('offset', '84%');
+//   histoGradient.append('stop').attr('stop-color', d3.rgb("#d9d9db")).attr('offset', '16%');
 //----------------------------------
 
 speechPointOffset = 3
@@ -864,7 +865,7 @@ drawHisto = function(scales){
 
   histoX = d3.scaleLinear()
     .domain([0, d3.max(bins,function(d){return d.length;})])
-    .range([0,85])
+    .range([0,histoWidth*0.8])
 
   histoSVG.append("g").attr("id","histoBars")
     .selectAll("rect")
@@ -882,46 +883,46 @@ drawHisto = function(scales){
   histoSVG.append("g").attr("id","histoMX").append("line")
      .style("stroke","white")
      .attr("x1",0)
-     .attr("x2",100)
+     .attr("x2",histoWidth)
      .attr("y1",yScaleCUSUM(rsMax))
      .attr("y2",yScaleCUSUM(rsMax))
      .attr("stroke-dasharray",[5,5])
      .style("opacity",0)
 
- simCount = histoSVG.append("g").attr("id","simCount")
-  .attr("transform", "translate(55,"+(h-(h/20))+")")
+  simCount = histoSVG.append("g").attr("id","simCount")
+    .attr("transform", "translate(55,"+(h-(h/20))+")")
 
- simCountNum = simCount.append("text").attr("class","num-text")
+  simCountNum = simCount.append("text").attr("class","num-text")
    .text(0)
    .attr("text-anchor","middle")
    .attr("dy","-1em")
    .attr("dx","-0.3em");
 
- simCountLab = simCount.append("text").attr("class","lab-text")
+  simCountLab = simCount.append("text").attr("class","lab-text")
   .text("Simulations")
   .attr("text-anchor","middle")
   .attr("dx","-0.3em");
 
 
- hitRate= histoSVG.append("g").attr("id","hitRate")
+  hitRate= histoSVG.append("g").attr("id","hitRate")
   .attr("transform", "translate(55,"+h/15+")")
 
- hitRateNum = hitRate.append("text").attr("class","num-text")
+  hitRateNum = hitRate.append("text").attr("class","num-text")
    .text("0.0%")
    .style("font-size","20px")
    .attr("text-anchor","middle")
    .attr("dy","1em")
    .attr("dx","-0.3em");
 
- hitRateLab = hitRate.append("text").attr("class","lab-text")
+  hitRateLab = hitRate.append("text").attr("class","lab-text")
   .text("Confidence")
   .attr("text-anchor","middle")
   .attr("dx","-0.3em");
 
-  histoSVG.append("g").attr("transform","translate("+(histoWidth-15)+","+h/2+")")
-    .append("text").attr("class","histo-lab")
-    .text("Dist. of simulation scores")
-    .attr("text-anchor","middle")
+  // histoSVG.append("g").attr("transform","translate("+(histoWidth-15)+","+h/2+")")
+  //   .append("text").attr("class","histo-lab")
+  //   .text("Dist. of simulation scores")
+  //   .attr("text-anchor","middle")
 
 }
 //-------------------------------
