@@ -1,0 +1,126 @@
+<html>
+
+<head>
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Caveat">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bitter">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+
+    <!-- Custom CSS styles -->
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+  <!-- Load d3 -->
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+  <!-- Load d3-annotation -->
+  <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+
+</head>
+
+
+
+<body>
+<button id="button" type="button">Click Me!</button>
+
+</body>
+
+
+
+<script>
+
+w = 200;
+h = 250;
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        y = [],
+        dy = parseFloat(text.attr("dy")),
+        x = parseFloat(text.attr("x")),
+        tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", 0.8 + "em").text(word);
+      }
+    }
+  });
+}
+
+stepTrackerSVG = d3.select("body").append("svg").attr("class", "step-cont")
+  .attr("width", 200)
+  .attr("height", h)
+
+steps = d3.range(6)
+stepDesc = ["Take a trend",
+          "Convert values into deviations",
+          "Quantify the strength of change",
+          "Generate a null distribution",
+          "Assess significance",
+          "Characterise change-point"]
+
+stepDict = []
+stepDesc.map(function(d,i){
+  stepDict[i] = {"key":i,"desc":d}
+})
+
+stepGroups = stepTrackerSVG.selectAll("g").attr("id","group")
+  .data(stepDict)
+  .enter()
+  .append("g");
+
+stepCircles = stepGroups.append("circle").attr("id","circle")
+  .attr("cx",10)
+  .attr("cy",d => d.key * (h/steps.length) + (h/steps.length)/2)
+  .attr("r",3.5)
+  .attr("fill","white")
+  .attr("stroke","#b7b7b7")
+
+stepText = stepGroups.append("text")
+  .attr("class","step-text")
+  .text(d => d.desc)
+  .attr("x",22)
+  .attr("y",(d,i) => i * (h/stepDesc.length) + (h/stepDesc.length)/2)
+  .attr("fill", "#b7b7b7")
+  .attr("dy",0)
+  .call(wrap,130)
+
+d3.select(stepText.nodes()[0]).attr("y",24)
+
+stepLine = stepTrackerSVG.insert("line","g")
+  .attr("x1",10)
+  .attr("x2",10)
+  .attr("y1",stepCircles.nodes()[0].getBBox().y)
+  .attr("y2",stepCircles.nodes()[steps.length-1].getBBox().y)
+  .attr("stroke","#b7b7b7")
+
+step = 0
+function nextStep(){
+  d3.select(stepCircles.nodes()[step]).attr("fill","#b7b7b7").attr("stroke","#283848");
+  d3.select(stepCircles.nodes()[step-1]).attr("fill","#b7b7b7").attr("stroke","#b7b7b7");;
+  d3.select(stepText.nodes()[step]).attr("fill","#283848");
+  d3.select(stepText.nodes()[step-1]).attr("fill","#b7b7b7");
+};
+nextStep();
+d3.select("#button").on("click",function(){
+
+  nextStep();
+
+  step = step+1;
+})
+
+
+
+
+
+
+</script>
+
+</html>
