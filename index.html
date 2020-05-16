@@ -1577,6 +1577,7 @@ cpLine = function(data,scales){
     setTimeout(function(){
         Button(annCont,"Go Again",80,25);
         ShuffleButton.attr("id","Go-Again");
+        ShuffleButton.select("text").style("opacity",0.8);
         d3.select("#Go-Again").on("click",function(){
           location.reload();
         })
