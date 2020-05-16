@@ -27,8 +27,8 @@
       <div id = "subtitle">Detecting shifts in time-series data</div>
     </div>
     <div id = intro-box>
-      <div class = intro>How can we tell whether a meaningful change has occured in a trend? Traditionally, change-detection has involved flagging isolated points that stray from an expected range. While useful for real-time alerting applications, this might miss more subtle, sustained shifts brought about by more profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured.</div>
-      <div class = intro>Follow the steps below to find out more about how Change-Point analysis works, using Bootstrap methods.</div>
+      <div class = intro>How can we tell whether a meaningful change has occured in a trend? Traditionally, change-detection has involved flagging of isolated points that stray from an expected range. While useful for real-time alerting applications, such point-by-point methods might miss more subtle, sustained shifts brought about by more profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
+      <div class = intro>Follow the steps below,  by clicking the flashing "Next" button, to find out more about how change-point analysis works.</div>
     </div>
       <div id="topView" class = "subdiv">
         <div id="lineChartCont" class = "canvas"></div>
@@ -139,6 +139,38 @@ speechPointOffset = 3
 
 let showBars = true
 let automate = false
+
+//Button -----------
+buttonWidth = 100;
+buttonHeight = 30;
+
+Button = function(container,text,width,height){
+   width = width || buttonWidth
+   height = height || buttonHeight
+   ShuffleButton = container.append("svg")
+     .attr("id",`${text}`)
+     .attr("class","shuffle-button")
+     .attr("width", width)
+     .attr("height",height)
+   ShuffleButton.append("text")
+     .attr("class","shuffle-text")
+     .attr("x","50%")
+     .attr("y","50%")
+     .text(`${text}`)
+     .attr("text-anchor","middle")
+     .attr("dominant-baseline","middle")
+   ShuffleButton.append("line")
+     .attr("x1",0)
+     .attr("x2",0)
+     .attr("y1",height-1)
+     .attr("y2",height-1)
+     .attr("stroke-width", 1.5)
+     .attr("stroke","black")
+     .attr("opacity",0.9)
+     .transition().duration(1500)
+       .attr("x2", width)
+ }
+//-----------------------------------
 
 function lineTrans(chart,duration,delay,easement){
   easement = easement || d3.easeLinear
@@ -296,7 +328,9 @@ stepTracker = function(){
     .attr("dy",0)
     .call(wrap,130)
 
+  //Hard-coded Y-axis correction for one-line labels. Find a way to make dynamic.
   d3.select(stepText.nodes()[0]).attr("y",24)
+  d3.select(stepText.nodes()[4]).attr("y",190)
 
   stepLine = stepTrackerSVG.insert("line","g")
     .attr("x1",10)
@@ -330,7 +364,7 @@ stepSequencer = function(dict,scales){
       AnnWindow
         .append("text").attr("class","ann2")
         .attr("text-anchor","left")
-        .text("Calculate the deviation of each data point from the mean (i.e. the delta)")
+        .text("Calculate the deviation of each data point from the mean (i.e. the delta).")
         .attr("dy","1em")
         .call(wrap,300)
 
@@ -342,7 +376,7 @@ stepSequencer = function(dict,scales){
       AnnWindow.append("text").attr("class","ann2")
         .text("But how can we quantify the strength of this change?")
         .attr("y",AnnWindow.node().getBBox().height)
-        .attr("dy","0.35em")
+        .attr("dy","0.3em")
         .call(wrap,300)
         .transition().duration(800)
         .attr("opacity",1);
@@ -389,7 +423,7 @@ stepSequencer = function(dict,scales){
         .call(wrap,300)
         .attr("dy","1.5em").attr("x",0)
         .attr("opacity",0)
-        .transition().duration(1000).delay(2500)
+        .transition().duration(1000).delay(2000)
           .attr("opacity",1)
           .on("end",ready)
       step = 6;
@@ -398,7 +432,7 @@ stepSequencer = function(dict,scales){
       wait();
 
       test.append("tspan")
-        .text("So we need to ask: could a score this high have simply resulted from chance?")
+        .text("...So we need to ask: could a score this high have simply resulted from chance?")
         .call(wrap,300)
         .attr("dy","1.7em")
         .attr("opacity",0)
@@ -424,35 +458,12 @@ stepSequencer = function(dict,scales){
     } else if (step == 8){
       wait();
 
-      buttonWidth = 100;
-      buttonHeight = 30;
+      // buttonWidth = 100;
+      // buttonHeight = 30;
 
       buttonG = annCont.append("g").attr("id","buttonG")
 
-      function shuffleButton(){
-        ShuffleButton = buttonG.append("svg")
-          .attr("id","shuffleButton")
-          .attr("class","shuffle-button")
-          .attr("width", buttonWidth)
-          .attr("height",buttonHeight)
-        ShuffleButton.append("text")
-          .attr("class","shuffle-text")
-          .attr("x","50%")
-          .attr("y","50%")
-          .text("Shuffle")
-          .attr("text-anchor","middle")
-          .attr("dominant-baseline","middle")
-        ShuffleButton.append("line")
-          .attr("x1",0)
-          .attr("x2",0)
-          .attr("y1",buttonHeight-1)
-          .attr("y2",buttonHeight-1)
-          .attr("stroke-width", 1.5)
-          .attr("stroke","black")
-          .transition().duration(1500)
-            .attr("x2",buttonWidth)
-      }
-      shuffleButton();
+      Button(buttonG,"Shuffle")
 
       shuffleData(dict,scales);
 
@@ -572,7 +583,6 @@ drawBars = function(data,scales){
               .attr("width",posBbox.width+10)
               .attr("height",posBbox.height-10)
               .attr("fill","white")
-
 
              hG.insert("image","rect")
               .attr("x",posBbox.x-5)
@@ -915,7 +925,7 @@ cusumMax = function(scales){
     .duration(1500)
 		.attr("x2",w)
     .on("end",function(){
-      setTimeout(cusumMaxAnn,1000)
+      setTimeout(cusumMaxAnn,1500)
     })
 
   cusumSvg.select("#cusumRect")
@@ -1021,7 +1031,7 @@ drawHisto = function(scales){
 
 // Shuffling -----------------------
 shuffleData = function(data,scales){
-  d3.select("#ShuffleButton").on("click", function(){
+  d3.select("#Shuffle").on("click", function(){
     let {xScale,yScale,yScaleCUSUM,yScaleCSMheight} = scales;
 
     d3.select("#arrow").attr("opacity","1");
@@ -1210,15 +1220,15 @@ shuffleData = function(data,scales){
     }
 
     //Show Confidence annotation
-    if (shuffleCount == 6) {
+    if (shuffleCount == 7) {
       speech = d3.select("#mainView")
         .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",200)
         .style("left",d3.select("#cusumView").node().offsetLeft + w*2 - 200 - 20 + 10 - 5) //300 = SpeechBubble width; 20 = ArrowWidth; 10 = HistoMargin; 5 = Additional Spacing
         .style("top",d3.select("#histoChart").node().offsetTop + speechPointOffset + 20) //20 = manual vertical positioning
         .style("margin-left", 0)
-        .append("span").text("If the original trend has a higher score than nearly all of the random shuffles 🎲 (let's say at least ")
+        .append("span").text("If the original trend has a higher score than nearly all random shuffles 🎲 (let's say at least ")
       speech.append("span").text("95%").style("font-weight","bold")
-      speech.append("span").text(" of them), then we can confident there's a change. Keep Shuffling!")
+      speech.append("span").text(" of them), then we can be confident there's a change. Keep Shuffling!")
       // speech.append("br")
       // speech.append("br")
       // speech.append("span").text("Keep Shuffling!")
@@ -1235,32 +1245,10 @@ shuffleData = function(data,scales){
     }
 
     //Show automateShuffle button
-    if (shuffleCount == 7) {
+    if (shuffleCount == 8) {
       d3.select("#speechDiv2").remove();
 
-      function shuffleButton2(){
-        ShuffleButton2 = buttonG.append("svg")
-          .attr("class","shuffle-button").attr("id","autoButton")
-          .attr("width", buttonWidth*1.3)
-          .attr("height",buttonHeight)
-        ShuffleButton2.append("text")
-          .attr("class","shuffle-text").attr("id","autoText")
-          .attr("x","50%")
-          .attr("y","50%")
-          .text("Auto-Shuffle")
-          .attr("text-anchor","middle")
-          .attr("dominant-baseline","middle")
-        ShuffleButton2.append("line")
-          .attr("x1",0)
-          .attr("x2",0)
-          .attr("y1",buttonHeight-1)
-          .attr("y2",buttonHeight-1)
-          .attr("stroke-width", 1.5)
-          .attr("stroke","black")
-          .transition().duration(1500)
-            .attr("x2",buttonWidth*1.3)
-      }
-      shuffleButton2();
+      Button(buttonG,"Auto-Shuffle",buttonWidth*1.3)
 
       shuffleInterval(dict,scales);
     }
@@ -1277,9 +1265,11 @@ shuffleData = function(data,scales){
 
 shuffleInterval = function(dict,scales){
 
-    d3.select("#autoButton").on("click", function(){
+    d3.select("#Auto-Shuffle").on("click", function(){
       automate =! automate
       shuffleSpeed = 90; sampleSize = 1000;
+
+
 
       if (automate){
         resetOrig();
@@ -1291,15 +1281,15 @@ shuffleInterval = function(dict,scales){
             clearTimeout(inter);
             cpResult(dict,scales);
             automate =! automate;
-            d3.select("#autoText").text("Auto-Shuffle")
+            d3.select("#Auto-Shuffle").select(".shuffle-text").text("Auto-Shuffle");
           } else {inter = setTimeout(myFunction, shuffleSpeed)};
         }
         setTimeout(myFunction, shuffleSpeed);
-        d3.select("#autoText").text("Pause");
+        d3.select("#Auto-Shuffle").select(".shuffle-text").text("Pause");
 
       } else {
         clearTimeout(inter);
-        d3.select("#autoText").text("Auto-Shuffle");
+        d3.select("#Auto-Shuffle").select(".shuffle-text").text("Auto-Shuffle");
       }
     })
 
@@ -1447,16 +1437,19 @@ cpResult = function(dict,scales){
   .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
 
   if (cpExists) {
-    setTimeout(()=>cpLine(dict,scales),2000);
+    setTimeout(function(){
+      cpLine(dict,scales);
+    },2000);
   }
 }
-
 
 cpLine = function(data,scales){
   let {xScale,yScale} = scales;
 
   trackedStep = 5;
   nextStep();
+
+  line.attr("opacity",0.35);
 
   //Calculate posiiton of change-point
   cpIndex = xScale(cusumPeak[0].key)+xScale.bandwidth()
@@ -1494,6 +1487,106 @@ cpLine = function(data,scales){
   data.map(function(d){if (d.key <= cusumPeak[0].key){segment1.push(d.value)} else {segment2.push(d.value)}})
   segmentMeans = [d3.mean(segment1),d3.mean(segment2)]
 
+  cpCharDetails = function(){
+      d3.selectAll(".segment-line").each(function(d,i){
+      svg.append("text").attr("id","segment-labels")
+      .attr("class","segment-lab")
+      .attr("x",this.getBBox().x + this.getBBox().width/2)
+      .attr("y",this.getBBox().y -5)
+      .attr("text-anchor","middle")
+      .text(`Segment ${i+1} mean = `) //X̄
+        .append("tspan").text(Math.round((i == 0 ? segmentMeans[0] : segmentMeans[1])*10)/10).attr("font-weight","bold")
+      })
+
+    //Draw Segment Change Line
+     d3.select("#cpChar")
+       .append("line").attr("stroke","black")
+       .attr("x1",cpIndex)
+       .attr("x2",cpIndex)
+       .attr("y1",yScale(segmentMeans[0]))
+       .attr("y2",yScale(segmentMeans[0]))
+       .attr("stroke-width",1)
+       .transition().duration(1500).delay(1000)
+       .attr("y2",yScale(segmentMeans[1]))
+       .on("end",cpMagCallout)
+
+     function cpMagCallout(){
+       cpIndex = xScale(cusumPeak[0].key) + xScale.bandwidth()
+       midPoint = yScale(segmentMeans[0] - (segmentMeans[0]-segmentMeans[1])/2)
+
+       let rScale = d3.scaleLinear()
+         .domain([0,segmentMeans[0]-segmentMeans[1]])
+         .range([0,(yScale(segmentMeans[1])-yScale(segmentMeans[0]))/2]);
+       //cpRadius = rScale((segmentMeans[0]-segmentMeans[1])*1.3)
+       cpRadius = rScale((segmentMeans[0]-segmentMeans[1]))
+
+       console.log(midPoint)
+
+       dy = -50;
+       dx = 30
+
+       //Features of the annotation
+       const annotations = [{
+           note: {label: "", wrap:150},
+           x: cpIndex, y: midPoint,
+           dy: dy, dx: dx,
+           subject: {radius: cpRadius},
+           color: "black"
+       }]
+
+       //Add annotation to the Chart
+       const makeAnnotations = d3.annotation()
+         //.editMode(true)
+         .type(d3.annotationCalloutCircle)
+         .annotations(annotations)
+       svg.append("g").attr("id","cpCallout")
+         .call(makeAnnotations);
+
+
+       speech = d3.select("#mainView")
+         .append("div").attr("id","speechDiv").attr("class","speech-box-white")
+         .style("left",d3.select("#lineChartCont").node().offsetLeft + cpIndex + dx - 80)
+         .style("top",d3.select("#lineChartCont").node().offsetTop + midPoint + dy + 3) //+3, so the box overaps the line
+         .append("span").text("The magnitude of change is ")
+         speech.append("span").text(Math.round((segmentMeans[0]-segmentMeans[1])*10)/10).style("font-weight","bold")
+         speech.append("span").text("...or a drop 📉 of ")
+         speech.append("span").text(`${Math.round(((segmentMeans[0]-segmentMeans[1])/segmentMeans[0])*100)}%`).style("font-weight","bold")
+
+       d3.select("#speechDiv")
+       .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
+     };
+
+  }
+
+  tryAgain = function(){
+    d3.select("#buttonG").remove();
+    d3.select(".ann4").text("");
+    PageNum.select("text").text("6")
+
+    d3.select(".ann4").append("tspan").text("Thanks for following along.")
+      .attr("opacity",0)
+      .transition().duration(1000)
+        .attr("opacity",1)
+    d3.select(".ann4").append("tspan").text("with a different trend?")
+      .attr("x",80)
+      .attr("dy","1.5em")
+      .attr("opacity",0)
+      .transition().duration(2000).delay(1500)
+        .attr("opacity",1)
+
+    setTimeout(function(){
+        Button(annCont,"Go Again",80,25);
+        ShuffleButton.attr("id","Go-Again");
+        d3.select("#Go-Again").on("click",function(){
+          location.reload();
+        })
+      },1500)
+
+
+
+
+  }
+
   //Draw Segment Means
   svg.append("g").attr("id","cpChar")
     .selectAll("line")
@@ -1508,91 +1601,12 @@ cpLine = function(data,scales){
     .attr("stroke-width",1)
     .transition().duration(1000).delay((d,i) => 2500 + (i*1000))
     .attr("x2",(d,i) => i==0 ? cpIndex : w)
-    .end().then(() =>  {
-        d3.selectAll(".segment-line").each(function(d,i){
-          svg.append("text").attr("id","segment-labels")
-          .attr("class","segment-lab")
-          .attr("x",this.getBBox().x + this.getBBox().width/2)
-          .attr("y",this.getBBox().y -5)
-          .attr("text-anchor","middle")
-          .text(`Segment ${i+1} mean = `) //X̄
-            .append("tspan").text(Math.round((i == 0 ? segmentMeans[0] : segmentMeans[1])*10)/10).attr("font-weight","bold")
-     })
-
-  //Draw Segment Change Line
-   d3.select("#cpChar")
-     .append("line").attr("stroke","black")
-     .attr("x1",cpIndex)
-     .attr("x2",cpIndex)
-     .attr("y1",yScale(segmentMeans[0]))
-     .attr("y2",yScale(segmentMeans[0]))
-     .attr("stroke-width",1)
-     .transition().duration(1500).delay(1000)
-     .attr("y2",yScale(segmentMeans[1]))
-     .on("end",cpMagCallout)
-
-   function cpMagCallout(){
-     cpIndex = xScale(cusumPeak[0].key) + xScale.bandwidth()
-     midPoint = yScale(segmentMeans[0] - (segmentMeans[0]-segmentMeans[1])/2)
-
-     let rScale = d3.scaleLinear()
-       .domain([0,segmentMeans[0]-segmentMeans[1]])
-       .range([0,(yScale(segmentMeans[1])-yScale(segmentMeans[0]))/2]);
-     //cpRadius = rScale((segmentMeans[0]-segmentMeans[1])*1.3)
-     cpRadius = rScale((segmentMeans[0]-segmentMeans[1]))
-
-     console.log(midPoint)
-
-     dy = -50;
-     dx = 30
-
-     //Features of the annotation
-     const annotations = [{
-         note: {label: "", wrap:150},
-         x: cpIndex, y: midPoint,
-         dy: dy, dx: dx,
-         subject: {radius: cpRadius},
-         color: "black"
-     }]
-
-     //Add annotation to the Chart
-     const makeAnnotations = d3.annotation()
-       //.editMode(true)
-       .type(d3.annotationCalloutCircle)
-       .annotations(annotations)
-     svg.append("g").attr("id","cpCallout")
-       .call(makeAnnotations);
-
-
-     speech = d3.select("#mainView")
-       .append("div").attr("id","speechDiv").attr("class","speech-box-white")
-       .style("left",d3.select("#lineChartCont").node().offsetLeft + cpIndex + dx - 80)
-       .style("top",d3.select("#lineChartCont").node().offsetTop + midPoint + dy + 3) //+3, so the box overaps the line
-       .append("span").text("The change-point magnitude 📏 is ")
-       speech.append("span").text(Math.round((segmentMeans[0]-segmentMeans[1])*10)/10).style("font-weight","bold")
-       speech.append("span").text("...or a drop of ")
-       speech.append("span").text(`${Math.round(((segmentMeans[0]-segmentMeans[1])/segmentMeans[0])*100)}%`).style("font-weight","bold")
-
-     d3.select("#speechDiv")
-     .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
-
-     };
-   })
-
-   line.attr("opacity",0.35)
-
-  // function blink() {
-  //  hitRateNum
-  //   .transition()
-  //   .duration(1000)
-  //   .style("fill", "#233240")
-  //   .transition()
-  //   .duration(1000)
-  //   .style("fill", "#78909c")
-  //   .on("end", blink)
-  // }
-  // // blink()
+    .end().then(function(){
+      cpCharDetails();
+      setTimeout(tryAgain,6000)
+    })
 }
+
 
 
 
