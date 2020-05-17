@@ -94,6 +94,12 @@ h1, h2, h3, h4, h5, h6 {
 #intro-box {
   margin-bottom: 10px;
 }
+#next-text{
+  font-family: "Caveat";
+  color: #ababac;
+  font-size: 20px;
+  /* background-color: #ababac; */
+}
 #AnnWindow, #pageNum text{
   font-family: "Caveat";
   font-size: 21px;
