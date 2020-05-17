@@ -353,3 +353,8 @@ h1, h2, h3, h4, h5, h6 {
 #segment-labels {
   animation: fadein 1.5s;
 }
+#origLine{
+  color: white;
+  background-color:#597086
+  /* font-size: 15px: */
+}
