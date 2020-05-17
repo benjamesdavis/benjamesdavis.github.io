@@ -469,15 +469,57 @@ stepSequencer = function(dict,scales){
 
       step = 9;
     } else if (step == 9) {
+      wait();
+
       trackedStep = 5;
       nextStep();
+
       d3.select("#speechDiv").remove();
       d3.select("#buttonG").remove();
       d3.select(".ann4").text("");
       PageNum.select("text").text("6");
 
-      setTimeout(()=>cpLine(dict,scales),1000)
-    }
+
+      function cpTimeCallout(){
+        //if (clickCount === cusumPeak[0].key) {
+            highestValue = yScaleCUSUM(cusumPeak[0].end)
+            highestIndex = xScale(cusumPeak[0].key)
+
+            //Features of the annotation
+            const annotations = [{
+                note: {label: "", wrap:200},
+                x: highestIndex, y: highestValue,
+                dy: -40, dx: 100,
+                subject: {radius: 35},
+                color: "white"
+            }]
+
+            //Add annotation to the Chart
+            const makeAnnotations = d3.annotation()
+              //.editMode(true)
+              .type(d3.annotationCalloutCircle)
+              .annotations(annotations)
+            d3.select("#cusumSvg")
+              .append("g").attr("id","callout")
+              .call(makeAnnotations);
+
+            speech = d3.select("#mainView")
+              .append("div").attr("id","speechDiv").attr("class","speech-box")
+              .style("left",d3.select("#cusumView").node().offsetLeft + xScale(cusumPeak[0].key) + 50)
+              .style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(cusumPeak[0].end) - 30)
+              .append("span").text("The curve's peak pin-points the timing of the change-point")
+
+            d3.select("#speechDiv")
+            .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
+            .style("width",200)
+
+          };
+      setTimeout(cpTimeCallout,1000)
+
+
+      setTimeout(function(){
+        cpLine(dict,scales);
+    },2000)}
 
   })
 }
@@ -1600,97 +1642,23 @@ cpLine = function(data,scales){
       })
   }
 
-  function cpTimeCallout(){
-    //if (clickCount === cusumPeak[0].key) {
-        highestValue = yScaleCUSUM(cusumPeak[0].end)
-        highestIndex = xScale(cusumPeak[0].key)
-
-        //Features of the annotation
-        const annotations = [{
-            note: {label: "", wrap:200},
-            x: highestIndex, y: highestValue,
-            dy: -40, dx: 100,
-            subject: {radius: 35},
-            color: "white"
-        }]
-
-        //Add annotation to the Chart
-        const makeAnnotations = d3.annotation()
-          //.editMode(true)
-          .type(d3.annotationCalloutCircle)
-          .annotations(annotations)
-        d3.select("#cusumSvg")
-          .append("g").attr("id","callout")
-          .call(makeAnnotations);
-
-        speech = d3.select("#mainView")
-          .append("div").attr("id","speechDiv").attr("class","speech-box")
-          .style("left",d3.select("#cusumView").node().offsetLeft + xScale(cusumPeak[0].key) + 50)
-          .style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(cusumPeak[0].end) - 30)
-          .append("span").text("The curve's peak pin-points the timing of the change-point")
-
-        d3.select("#speechDiv")
-        .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
-        .style("width",200)
-
-      };
-
-  function drawCPLine1(){
-    d3.select("#cusumSvg")
-    .append("line")
-    .attr("x1",xScale(cusumPeak[0].key) + xScale.bandwidth())
-    .attr("x2",xScale(cusumPeak[0].key) + xScale.bandwidth())
-    .attr("y1",h)
-    .attr("y2",h)
-    .attr("stroke-width",1)
-    .attr("stroke","white")
-    .attr("stroke-dasharray",[5,5])
-    .transition().duration(1000).ease(d3.easeLinear)
-    .attr("y2",yScaleCUSUM(cusumPeak[0].end))
-    .on("end",function(){
-      cpTimeCallout();
-      setTimeout(function(){
-        d3.select("#speechDiv").remove();
-        d3.select("#callout").remove();
-        drawCPLine2();
-      },4500)
-    })
-  }
-  drawCPLine1();
-
-  function drawCPLine3(){
-     baseSvg
-     .append("line")
-     .attr("x1",xScale(cusumPeak[0].key) + xScale.bandwidth())
-     .attr("x2",xScale(cusumPeak[0].key) + xScale.bandwidth())
-     .attr("y1",h)
-     .attr("y2",h)
-     .attr("stroke-width",1)
-     .attr("stroke","grey")
-     .attr("stroke-dasharray",[5,5])
-     .transition().duration(1000).ease(d3.easeLinear)
-     .attr("y2",0)
-     .on("end",setTimeout(drawSegmentMeans,1000))
-    }
-
-  function drawCPLine2(){
-    d3.select("#cusumSvg")
-    .append("line")
-    .attr("x1",xScale(cusumPeak[0].key) + xScale.bandwidth())
-    .attr("x2",xScale(cusumPeak[0].key) + xScale.bandwidth())
-    .attr("y1",yScaleCUSUM(cusumPeak[0].end))
-    .attr("y2",yScaleCUSUM(cusumPeak[0].end))
-    .attr("stroke-width",1)
-    .attr("stroke","white")
-    .attr("stroke-dasharray",[5,5])
-    .transition().duration(400).ease(d3.easeLinear)
-      .attr("y2",0)
-      .on("end",drawCPLine3)
+  function drawCPLine(container,color,delay){
+   container
+   .append("line")
+   .attr("x1",xScale(cusumPeak[0].key) + xScale.bandwidth())
+   .attr("x2",xScale(cusumPeak[0].key) + xScale.bandwidth())
+   .attr("y1",h)
+   .attr("y2",h)
+   .attr("stroke-width",1)
+   .attr("stroke",color)
+   .attr("stroke-dasharray",[5,5])
+   .transition().duration(1000).delay(delay).ease(d3.easeLinear)
+   .attr("y2",0)
   }
 
-
-
-
+  //Draw CP line through both containers
+  drawCPLine(d3.select("#cusumSvg"),"white",0)
+  drawCPLine(baseSvg,"grey",1000)
 
 
 
