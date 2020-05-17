@@ -1227,7 +1227,7 @@ shuffleData = function(data,scales){
         .style("top",d3.select("#histoChart").node().offsetTop + speechPointOffset + 20) //20 = manual vertical positioning
         .style("margin-left", 0)
         .append("span").text("If the original trend ")
-      speech.append("mark").attr("id","origLine").text("---")
+      speech.append("span").attr("id","origLine").text("---")
       speech.append("span").text(" has a higher score than nearly all random shuffles 🎲 (let's say at least ")
       speech.append("span").text("95%").style("font-weight","bold")
       speech.append("span").text(" of them), then we can be confident there's a change. Keep Shuffling!")
