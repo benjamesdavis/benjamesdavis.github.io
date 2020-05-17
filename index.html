@@ -1175,7 +1175,7 @@ shuffleData = function(data,scales){
 
     //Show chart re-set button
     if (shuffleCount == 3) {
-      buttonSize = 30
+      buttonSize = 28
 
       resetSvg = d3.select("#lineChartCont").append("svg").attr("id","resetButton")
         .attr("viewBox","0 0 100 100")
@@ -1424,7 +1424,7 @@ cpResult = function(dict,scales){
   nextStep();
 
   cpExists = cpResultText = parseInt(hitRateNum.text()) >= 95
-  cpResultText = cpExists ? "Hurrah! It looks like we've got a change-point ✔️": "It looks like there's no change-point here 🤷. Refresh the page to try again.‍"
+  cpResultText = cpExists ? "Hurrah! It looks like we've got a change-point ✔️": "It looks like there's no change here 🤷. Refresh the page to try again.‍"
 
   speech = d3.select("#mainView")
     .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",200)
