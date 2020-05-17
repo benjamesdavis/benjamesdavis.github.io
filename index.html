@@ -483,7 +483,7 @@ stepSequencer = function(dict,scales){
       function cpTimeCallout(){
         //if (clickCount === cusumPeak[0].key) {
             highestValue = yScaleCUSUM(cusumPeak[0].end)
-            highestIndex = xScale(cusumPeak[0].key)
+            highestIndex = xScale(cusumPeak[0].key) + xScale.bandwidth()
 
             //Features of the annotation
             const annotations = [{
@@ -518,6 +518,8 @@ stepSequencer = function(dict,scales){
 
 
       setTimeout(function(){
+        d3.select("#callout").remove();
+        d3.select("#speechDiv").remove();
         cpLine(dict,scales);
     },2000)}
 
@@ -1659,6 +1661,8 @@ cpLine = function(data,scales){
   //Draw CP line through both containers
   drawCPLine(d3.select("#cusumSvg"),"white",0)
   drawCPLine(baseSvg,"grey",1000)
+
+
 
 
 
