@@ -1635,7 +1635,7 @@ cpLine = function(data,scales){
       .attr("y2",d=>yScale(d))
       .attr("stroke","black")
       .attr("stroke-width",1)
-      .transition().duration(1000)
+      .transition().duration(1000).delay((d,i) => 2500 + (i*1000))
       .delay((d,i) => i*1000)
       .attr("x2",(d,i) => i==0 ? cpIndex : w)
       .end().then(function(){
