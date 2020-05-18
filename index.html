@@ -467,6 +467,8 @@ stepSequencer = function(dict,scales){
       step = 9;
 
     } else if (step == 9) {
+      wait();
+
       d3.select("#speechDiv").remove();
       d3.select("#buttonG").remove();
       PageNum.select("text").text("6");
@@ -475,9 +477,15 @@ stepSequencer = function(dict,scales){
       nextStep();
 
       d3.select(".ann4")
-        .text("When did the change occur? And how big was it?")
+        .text("Alongside our confidence in the change, we can describe other key features of it....such as when it occurred, and how big it was.")
         .call(wrap,300);
 
+      ready();
+
+      step = 10;
+
+    } else if (step == 10){
+      wait();
       function cpTimeCallout(){
         //if (clickCount === cusumPeak[0].key) {
             highestValue = yScaleCUSUM(cusumPeak[0].end)
@@ -488,7 +496,7 @@ stepSequencer = function(dict,scales){
                 note: {label: "", wrap:250},
                 x: highestIndex, y: highestValue,
                 dy: -40, dx: 100,
-                subject: {radius: 35},
+                subject: {radius: 25},
                 color: "white"
             }]
 
@@ -513,15 +521,11 @@ stepSequencer = function(dict,scales){
 
           };
 
-      setTimeout(function(){
-        cpTimeCallout();
-        ready();
-      },3500)
+      cpTimeCallout();
+      setTimeout(ready,1500)
 
-
-
-      step = 10;
-    } else if (step == 10) {
+      step = 11;
+    } else if (step == 11) {
       // d3.select("#speechDiv").remove();
       wait();
 
@@ -762,7 +766,7 @@ animateWaterfall = function(data, scales){
 
   //Cycle through updateData until all data points are rendered
   //let duration = 120
-  let duration = 30 //CHANGE BACK TO 120
+  let duration = 120 //CHANGE BACK TO 120
 
   cumPos = 0; posIndex = [];
   cumNeg = 0; negIndex =[]; negCount = 0;
@@ -1646,7 +1650,7 @@ cpLine = function(data,scales){
       .attr("x2",(d,i) => i==0 ? cpIndex : w)
       .end().then(function(){
         cpCharDetails();
-        setTimeout(tryAgain,6000)
+        setTimeout(tryAgain,7000)
       })
   // }
 
