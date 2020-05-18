@@ -477,7 +477,7 @@ stepSequencer = function(dict,scales){
       nextStep();
 
       d3.select(".ann4")
-        .text("Alongside our % confidence in the change, we can describe other key features of it....such as when it occurred, and how big it was.")
+        .text("Alongside our confidence in the change, we can describe other key features of it....such as when it occurred, and how big it was.")
         .call(wrap,300);
 
       ready();
@@ -766,7 +766,7 @@ animateWaterfall = function(data, scales){
 
   //Cycle through updateData until all data points are rendered
   //let duration = 120
-  let duration = 30 //CHANGE BACK TO 120
+  let duration = 120 //CHANGE BACK TO 120
 
   cumPos = 0; posIndex = [];
   cumNeg = 0; negIndex =[]; negCount = 0;
