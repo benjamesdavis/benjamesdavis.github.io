@@ -350,6 +350,9 @@ h1, h2, h3, h4, h5, h6 {
 #cpCallout path {
     stroke-width: 1px;
 }
+#cpTimeCallout,#cpTimeSpeechDiv{
+  animation: fadein 1s;
+}
 #segment-labels {
   animation: fadein 1.5s;
 }

@@ -27,7 +27,7 @@
       <div id = "subtitle">Detecting shifts in time-series data</div>
     </div>
     <div id = intro-box>
-      <div class = intro style = "margin-bottom: 10px">How can we tell whether a meaningful change has occured in a trend? Traditionally, change-detection has involved flagging of isolated points that stray from an expected range. While useful for real-time alerting applications, such point-by-point methods might miss more subtle, sustained shifts brought about by more profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
+      <div class = intro style = "margin-bottom: 10px">How can we tell whether a meaningful change has occurred in a trend? Traditionally, change-detection has involved flagging isolated points that stray from an expected range. While useful for real-time alerting applications, such point-based methods might miss more subtle, sustained shifts that could indicate profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
       <div class = intro style = "margin-bottom: 15px">Follow the steps below,  by clicking the flashing <span id =next-intro-text> next </span> button, to find out more about how change-point analysis works.</div>
     </div>
       <div id="topView" class = "subdiv">
@@ -269,19 +269,19 @@ dataGeneration = function(){
 }
 
 getScales = function(data){
-	let xScale = d3.scaleBand()
+	 xScale = d3.scaleBand()
 		 .domain(d3.range(data.length))
 		 .range([0,w]);
 
-	let yScale = d3.scaleLinear()
+	 yScale = d3.scaleLinear()
 		.domain([d3.min(rsData,(d => d.value)), d3.max(rsData,(d => d.value))])
 		.range([lineHeight,0]);
 
-	let yScaleCUSUM = d3.scaleLinear()
+	 yScaleCUSUM = d3.scaleLinear()
 		.domain([0,rsMax*1.6])
 		.range([h,0]);
 
-	let yScaleCSMheight = d3.scaleLinear()
+	 yScaleCSMheight = d3.scaleLinear()
 		.domain([0, Math.abs(rsMax)])
 		.range([h,0]);
 
@@ -394,7 +394,11 @@ stepSequencer = function(dict,scales){
       AnnWindow
         .append("text").attr("class","ann3")
         .attr("text-anchor","left")
+<<<<<<< HEAD
         .text("By plotting the cumulative sum of deltas, we can translate sustained sequences of elevated vs. lower activity into a curve.")
+=======
+        .text("By plotting the cumulative sum of deltas, we can translate sustained sequences of higher vs. lowered activity into a curve.")
+>>>>>>> d7d77b03bb479774b1e8517fbc92a3488e3f84a7
         .attr("dy","1em")
         .call(wrap,300);
 
@@ -432,7 +436,7 @@ stepSequencer = function(dict,scales){
       wait();
 
       test.append("tspan")
-        .text("...So we need to ask: could a score this high have simply resulted from chance?")
+        .text("...So we need to ask: could a score this high have simply resulted by chance?")
         .call(wrap,300)
         .attr("dy","1.7em")
         .attr("opacity",0)
@@ -458,17 +462,83 @@ stepSequencer = function(dict,scales){
     } else if (step == 8){
       wait();
 
-      // buttonWidth = 100;
-      // buttonHeight = 30;
-
       buttonG = annCont.append("g").attr("id","buttonG")
 
       Button(buttonG,"Shuffle")
 
       shuffleData(dict,scales);
 
-      step = 8;
+      step = 9;
+
+    } else if (step == 9) {
+      wait();
+
+      d3.select("#speechDiv").remove();
+      d3.select("#buttonG").remove();
+      PageNum.select("text").text("6");
+
+      trackedStep = 5;
+      nextStep();
+
+      d3.select(".ann4")
+        .text("Alongside our confidence in the change, we can describe other key features of it....such as when it occurred, and how big it was.")
+        .call(wrap,300);
+
+      ready();
+
+      step = 10;
+
+    } else if (step == 10){
+      wait();
+      function cpTimeCallout(){
+        //if (clickCount === cusumPeak[0].key) {
+            highestValue = yScaleCUSUM(cusumPeak[0].end)
+            highestIndex = xScale(cusumPeak[0].key) + xScale.bandwidth()
+
+            //Features of the annotation
+            const annotations = [{
+                note: {label: "", wrap:250},
+                x: highestIndex, y: highestValue,
+                dy: -40, dx: 100,
+                subject: {radius: 25},
+                color: "white"
+            }]
+
+            //Add annotation to the Chart
+            const makeAnnotations = d3.annotation()
+              //.editMode(true)
+              .type(d3.annotationCalloutCircle)
+              .annotations(annotations)
+            d3.select("#cusumSvg")
+              .append("g").attr("id","cpTimeCallout")
+              .call(makeAnnotations);
+
+            speech = d3.select("#mainView")
+              .append("div").attr("id","cpTimeSpeechDiv").attr("class","speech-box")
+              .style("left",d3.select("#cusumView").node().offsetLeft + xScale(cusumPeak[0].key) + 50)
+              .style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(cusumPeak[0].end) - 30)
+              .append("span").text("The peak of the curve pin-points the moment of change")
+
+            d3.select("#cpTimeSpeechDiv")
+            .style("margin-top",-d3.select("#cpTimeSpeechDiv").node().offsetHeight/2)
+            .style("width",250)
+
+          };
+
+      cpTimeCallout();
+      setTimeout(ready,1500)
+
+      step = 11;
+    } else if (step == 11) {
+      // d3.select("#speechDiv").remove();
+      wait();
+
+      d3.select("#cpTimeCallout").remove();
+      // d3.select(".annotation-connector").remove();
+      d3.select("#cpTimeSpeechDiv").remove();
+      cpLine(dict,scales);
     }
+
 
   })
 }
@@ -1438,18 +1508,13 @@ cpResult = function(dict,scales){
   d3.select("#speechDiv")
   .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
 
-  if (cpExists) {
-    setTimeout(function(){
-      cpLine(dict,scales);
-    },2000);
-  }
+  if (cpExists) {ready()}
+
+
 }
 
 cpLine = function(data,scales){
-  let {xScale,yScale} = scales;
-
-  trackedStep = 5;
-  nextStep();
+  let {xScale,yScale,yScaleCUSUM} = scales;
 
   line.attr("opacity",0.35);
 
@@ -1458,11 +1523,140 @@ cpLine = function(data,scales){
 
   //Fade out deltas
   svg.selectAll("rect")
-    .transition().duration(1500)
+    // .transition().duration(1500)
       .attr("opacity", 0)
   d3.select("#meanLine")
-    .transition().duration(1500)
+    // .transition().duration(1500)
       .attr("stroke-opacity", 0)
+
+
+  // function drawSegmentMeans(){
+    //Calculate Segment Means
+    segment1 = []; segment2 =[];
+    data.map(function(d){if (d.key <= cusumPeak[0].key){segment1.push(d.value)} else {segment2.push(d.value)}})
+    segmentMeans = [d3.mean(segment1),d3.mean(segment2)]
+
+    cpCharDetails = function(){
+        d3.selectAll(".segment-line").each(function(d,i){
+        svg.append("text").attr("id","segment-labels")
+        .attr("class","segment-lab")
+        .attr("x",this.getBBox().x + this.getBBox().width/2)
+        .attr("y",this.getBBox().y -5)
+        .attr("text-anchor","middle")
+        .text(`Segment ${i+1} mean = `) //X̄
+          .append("tspan").text(Math.round((i == 0 ? segmentMeans[0] : segmentMeans[1])*10)/10).attr("font-weight","bold")
+        })
+
+      //Draw Segment Change Line
+       d3.select("#cpChar")
+         .append("line").attr("stroke","black")
+         .attr("x1",cpIndex)
+         .attr("x2",cpIndex)
+         .attr("y1",yScale(segmentMeans[0]))
+         .attr("y2",yScale(segmentMeans[0]))
+         .attr("stroke-width",1)
+         .transition().duration(1500).delay(2500)
+         .attr("y2",yScale(segmentMeans[1]))
+         .on("end",cpMagCallout)
+
+       function cpMagCallout(){
+         cpIndex = xScale(cusumPeak[0].key) + xScale.bandwidth()
+         midPoint = yScale(segmentMeans[0] - (segmentMeans[0]-segmentMeans[1])/2)
+
+         let rScale = d3.scaleLinear()
+           .domain([0,segmentMeans[0]-segmentMeans[1]])
+           .range([0,(yScale(segmentMeans[1])-yScale(segmentMeans[0]))/2]);
+         //cpRadius = rScale((segmentMeans[0]-segmentMeans[1])*1.3)
+         cpRadius = rScale((segmentMeans[0]-segmentMeans[1]))
+
+         console.log(midPoint)
+
+         dy = -50;
+         dx = 30
+
+         //Features of the annotation
+         const annotations = [{
+             note: {label: "", wrap:150},
+             x: cpIndex, y: midPoint,
+             dy: dy, dx: dx,
+             subject: {radius: cpRadius},
+             color: "black"
+         }]
+
+         //Add annotation to the Chart
+         const makeAnnotations = d3.annotation()
+           //.editMode(true)
+           .type(d3.annotationCalloutCircle)
+           .annotations(annotations)
+         svg.append("g").attr("id","cpCallout")
+           .call(makeAnnotations);
+
+
+         speech = d3.select("#mainView")
+           .append("div").attr("id","speechDiv").attr("class","speech-box-white")
+           .style("left",d3.select("#lineChartCont").node().offsetLeft + cpIndex + dx - 80)
+           .style("top",d3.select("#lineChartCont").node().offsetTop + midPoint + dy + 3) //+3, so the box overaps the line
+           .append("span").text("The magnitude of change is ")
+           speech.append("span").text(Math.round((segmentMeans[0]-segmentMeans[1])*10)/10).style("font-weight","bold")
+           speech.append("span").text("...or a drop 📉 of ")
+           speech.append("span").text(`${Math.round(((segmentMeans[0]-segmentMeans[1])/segmentMeans[0])*100)}%`).style("font-weight","bold")
+
+         // d3.select("#speechDiv")
+         // .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
+       };
+
+    }
+
+    tryAgain = function(){
+      // d3.select("#buttonG").remove();
+      d3.select(".ann4").text("");
+      // PageNum.select("text").text("6")
+
+      d3.select(".ann4").append("tspan").text("Thanks for following along.")
+        .attr("opacity",0)
+        .transition().duration(1000)
+          .attr("opacity",1)
+      d3.select(".ann4").append("tspan").text("with a different trend?")
+        .attr("x",80)
+        .attr("dy","1.5em")
+        .attr("opacity",0)
+        .transition().duration(2000).delay(1500)
+          .attr("opacity",1)
+
+      setTimeout(function(){
+          Button(annCont,"Go Again",80,25);
+          ShuffleButton.attr("id","Go-Again");
+          ShuffleButton.select("text").style("opacity",0.8);
+          d3.select("#Go-Again").on("click",function(){
+            location.reload();
+          })
+        },1500)
+
+
+
+
+    }
+
+    //Draw Segment Means
+    svg.append("g").attr("id","cpChar")
+      .selectAll("line")
+      .data(segmentMeans)
+      .enter()
+      .append("line").attr("class","segment-line")
+      .attr("x1",(d,i) => i==0 ? 0 : cpIndex)
+      .attr("x2",(d,i) => i==0 ? 0 : cpIndex)
+      .attr("y1",d=>yScale(d))
+      .attr("y2",d=>yScale(d))
+      .attr("stroke","black")
+      .attr("stroke-width",1)
+      .transition().duration(1000).delay((d,i) => 3500 + (i*1000))
+      // .delay((d,i) => i*1000)
+      .attr("x2",(d,i) => i==0 ? cpIndex : w)
+      .end().then(function(){
+        cpCharDetails();
+        setTimeout(tryAgain,7000)
+      })
+  // }
 
   function drawCPLine(container,color,delay){
    container
@@ -1474,141 +1668,27 @@ cpLine = function(data,scales){
    .attr("stroke-width",1)
    .attr("stroke",color)
    .attr("stroke-dasharray",[5,5])
-   .transition().duration(1000).delay(delay).ease(d3.easeLinear)
+   .transition().duration(1500).delay(delay).ease(d3.easeLinear)
    .attr("y2",0)
   }
 
   //Draw CP line through both containers
   drawCPLine(d3.select("#cusumSvg"),"white",0)
-  drawCPLine(baseSvg,"grey",1000)
+  drawCPLine(baseSvg,"grey",1500)
+
+
+
+
+
+  //Draw CP line through both containers
+  // drawCPLine(d3.select("#cusumSvg"),"white",0)
+  // drawCPLine(baseSvg,"grey",1000)
 
   data = dict.sort(function(a,b){return a.key - b.key})
 
-  //Calculate Segment Means
-  segment1 = []; segment2 =[];
-  data.map(function(d){if (d.key <= cusumPeak[0].key){segment1.push(d.value)} else {segment2.push(d.value)}})
-  segmentMeans = [d3.mean(segment1),d3.mean(segment2)]
-
-  cpCharDetails = function(){
-      d3.selectAll(".segment-line").each(function(d,i){
-      svg.append("text").attr("id","segment-labels")
-      .attr("class","segment-lab")
-      .attr("x",this.getBBox().x + this.getBBox().width/2)
-      .attr("y",this.getBBox().y -5)
-      .attr("text-anchor","middle")
-      .text(`Segment ${i+1} mean = `) //X̄
-        .append("tspan").text(Math.round((i == 0 ? segmentMeans[0] : segmentMeans[1])*10)/10).attr("font-weight","bold")
-      })
-
-    //Draw Segment Change Line
-     d3.select("#cpChar")
-       .append("line").attr("stroke","black")
-       .attr("x1",cpIndex)
-       .attr("x2",cpIndex)
-       .attr("y1",yScale(segmentMeans[0]))
-       .attr("y2",yScale(segmentMeans[0]))
-       .attr("stroke-width",1)
-       .transition().duration(1500).delay(1000)
-       .attr("y2",yScale(segmentMeans[1]))
-       .on("end",cpMagCallout)
-
-     function cpMagCallout(){
-       cpIndex = xScale(cusumPeak[0].key) + xScale.bandwidth()
-       midPoint = yScale(segmentMeans[0] - (segmentMeans[0]-segmentMeans[1])/2)
-
-       let rScale = d3.scaleLinear()
-         .domain([0,segmentMeans[0]-segmentMeans[1]])
-         .range([0,(yScale(segmentMeans[1])-yScale(segmentMeans[0]))/2]);
-       //cpRadius = rScale((segmentMeans[0]-segmentMeans[1])*1.3)
-       cpRadius = rScale((segmentMeans[0]-segmentMeans[1]))
-
-       console.log(midPoint)
-
-       dy = -50;
-       dx = 30
-
-       //Features of the annotation
-       const annotations = [{
-           note: {label: "", wrap:150},
-           x: cpIndex, y: midPoint,
-           dy: dy, dx: dx,
-           subject: {radius: cpRadius},
-           color: "black"
-       }]
-
-       //Add annotation to the Chart
-       const makeAnnotations = d3.annotation()
-         //.editMode(true)
-         .type(d3.annotationCalloutCircle)
-         .annotations(annotations)
-       svg.append("g").attr("id","cpCallout")
-         .call(makeAnnotations);
-
-
-       speech = d3.select("#mainView")
-         .append("div").attr("id","speechDiv").attr("class","speech-box-white")
-         .style("left",d3.select("#lineChartCont").node().offsetLeft + cpIndex + dx - 80)
-         .style("top",d3.select("#lineChartCont").node().offsetTop + midPoint + dy + 3) //+3, so the box overaps the line
-         .append("span").text("The magnitude of change is ")
-         speech.append("span").text(Math.round((segmentMeans[0]-segmentMeans[1])*10)/10).style("font-weight","bold")
-         speech.append("span").text("...or a drop 📉 of ")
-         speech.append("span").text(`${Math.round(((segmentMeans[0]-segmentMeans[1])/segmentMeans[0])*100)}%`).style("font-weight","bold")
-
-       d3.select("#speechDiv")
-       .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
-     };
-
-  }
-
-  tryAgain = function(){
-    d3.select("#buttonG").remove();
-    d3.select(".ann4").text("");
-    PageNum.select("text").text("6")
-
-    d3.select(".ann4").append("tspan").text("Thanks for following along.")
-      .attr("opacity",0)
-      .transition().duration(1000)
-        .attr("opacity",1)
-    d3.select(".ann4").append("tspan").text("with a different trend?")
-      .attr("x",80)
-      .attr("dy","1.5em")
-      .attr("opacity",0)
-      .transition().duration(2000).delay(1500)
-        .attr("opacity",1)
-
-    setTimeout(function(){
-        Button(annCont,"Go Again",80,25);
-        ShuffleButton.attr("id","Go-Again");
-        ShuffleButton.select("text").style("opacity",0.8);
-        d3.select("#Go-Again").on("click",function(){
-          location.reload();
-        })
-      },1500)
-
-
-
-
-  }
-
-  //Draw Segment Means
-  svg.append("g").attr("id","cpChar")
-    .selectAll("line")
-    .data(segmentMeans)
-    .enter()
-    .append("line").attr("class","segment-line")
-    .attr("x1",(d,i) => i==0 ? 0 : cpIndex)
-    .attr("x2",(d,i) => i==0 ? 0 : cpIndex)
-    .attr("y1",d=>yScale(d))
-    .attr("y2",d=>yScale(d))
-    .attr("stroke","black")
-    .attr("stroke-width",1)
-    .transition().duration(1000).delay((d,i) => 2500 + (i*1000))
-    .attr("x2",(d,i) => i==0 ? cpIndex : w)
-    .end().then(function(){
-      cpCharDetails();
-      setTimeout(tryAgain,6000)
-    })
 }
+
+
 
 
 
