@@ -27,7 +27,7 @@
       <div id = "subtitle">Detecting shifts in time-series data</div>
     </div>
     <div id = intro-box>
-      <div class = intro style = "margin-bottom: 10px">How can we tell whether a meaningful change has occurred in a trend? Traditionally, change-detection has involved flagging isolated points that stray from an expected range. While useful for real-time alerting applications, such point-by-point methods might miss more subtle, sustained shifts that could indicate profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
+      <div class = intro style = "margin-bottom: 10px">How can we tell whether a meaningful change has occurred in a trend? Traditionally, change-detection has involved flagging isolated points that stray from an expected range. While useful for real-time alerting applications, such point-based methods might miss more subtle, sustained shifts that could indicate profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
       <div class = intro style = "margin-bottom: 15px">Follow the steps below,  by clicking the flashing <span id =next-intro-text> next </span> button, to find out more about how change-point analysis works.</div>
     </div>
       <div id="topView" class = "subdiv">
@@ -458,9 +458,6 @@ stepSequencer = function(dict,scales){
     } else if (step == 8){
       wait();
 
-      // buttonWidth = 100;
-      // buttonHeight = 30;
-
       buttonG = annCont.append("g").attr("id","buttonG")
 
       Button(buttonG,"Shuffle")
@@ -468,17 +465,18 @@ stepSequencer = function(dict,scales){
       shuffleData(dict,scales);
 
       step = 9;
+
     } else if (step == 9) {
-      wait();
+      d3.select("#speechDiv").remove();
+      d3.select("#buttonG").remove();
+      PageNum.select("text").text("6");
 
       trackedStep = 5;
       nextStep();
 
-      d3.select("#speechDiv").remove();
-      d3.select("#buttonG").remove();
-      d3.select(".ann4").text("");
-      PageNum.select("text").text("6");
-
+      d3.select(".ann4")
+        .text("When did the change occur? And how big was it?")
+        .call(wrap,300);
 
       function cpTimeCallout(){
         //if (clickCount === cusumPeak[0].key) {
@@ -487,7 +485,7 @@ stepSequencer = function(dict,scales){
 
             //Features of the annotation
             const annotations = [{
-                note: {label: "", wrap:200},
+                note: {label: "", wrap:250},
                 x: highestIndex, y: highestValue,
                 dy: -40, dx: 100,
                 subject: {radius: 35},
@@ -500,28 +498,39 @@ stepSequencer = function(dict,scales){
               .type(d3.annotationCalloutCircle)
               .annotations(annotations)
             d3.select("#cusumSvg")
-              .append("g").attr("id","callout")
+              .append("g").attr("id","cpTimeCallout")
               .call(makeAnnotations);
 
             speech = d3.select("#mainView")
-              .append("div").attr("id","speechDiv").attr("class","speech-box")
+              .append("div").attr("id","cpTimeSpeechDiv").attr("class","speech-box")
               .style("left",d3.select("#cusumView").node().offsetLeft + xScale(cusumPeak[0].key) + 50)
               .style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(cusumPeak[0].end) - 30)
-              .append("span").text("The curve's peak pin-points the timing of the change-point")
+              .append("span").text("The peak of the curve pin-points the moment of change")
 
-            d3.select("#speechDiv")
-            .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
-            .style("width",200)
+            d3.select("#cpTimeSpeechDiv")
+            .style("margin-top",-d3.select("#cpTimeSpeechDiv").node().offsetHeight/2)
+            .style("width",250)
 
           };
-      setTimeout(cpTimeCallout,1000)
-
 
       setTimeout(function(){
-        d3.select("#callout").remove();
-        d3.select("#speechDiv").remove();
-        cpLine(dict,scales);
-    },5000)}
+        cpTimeCallout();
+        ready();
+      },3500)
+
+
+
+      step = 10;
+    } else if (step == 10) {
+      // d3.select("#speechDiv").remove();
+      wait();
+
+      d3.select("#cpTimeCallout").remove();
+      // d3.select(".annotation-connector").remove();
+      d3.select("#cpTimeSpeechDiv").remove();
+      cpLine(dict,scales);
+    }
+
 
   })
 }
@@ -1491,12 +1500,9 @@ cpResult = function(dict,scales){
   d3.select("#speechDiv")
   .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
 
-  if (cpExists) {
-    ready();
-    // setTimeout(function(){
-    //   cpLine(dict,scales);
-    // },2000);
-  }
+  if (cpExists) {ready()}
+
+
 }
 
 cpLine = function(data,scales){
@@ -1509,14 +1515,14 @@ cpLine = function(data,scales){
 
   //Fade out deltas
   svg.selectAll("rect")
-    .transition().duration(1500)
+    // .transition().duration(1500)
       .attr("opacity", 0)
   d3.select("#meanLine")
-    .transition().duration(1500)
+    // .transition().duration(1500)
       .attr("stroke-opacity", 0)
 
 
-  function drawSegmentMeans(){
+  // function drawSegmentMeans(){
     //Calculate Segment Means
     segment1 = []; segment2 =[];
     data.map(function(d){if (d.key <= cusumPeak[0].key){segment1.push(d.value)} else {segment2.push(d.value)}})
@@ -1541,7 +1547,7 @@ cpLine = function(data,scales){
          .attr("y1",yScale(segmentMeans[0]))
          .attr("y2",yScale(segmentMeans[0]))
          .attr("stroke-width",1)
-         .transition().duration(1500).delay(1000)
+         .transition().duration(1500).delay(2500)
          .attr("y2",yScale(segmentMeans[1]))
          .on("end",cpMagCallout)
 
@@ -1594,8 +1600,8 @@ cpLine = function(data,scales){
     }
 
     tryAgain = function(){
-      d3.select("#buttonG").remove();
-      // d3.select(".ann4").text("");
+      // d3.select("#buttonG").remove();
+      d3.select(".ann4").text("");
       // PageNum.select("text").text("6")
 
       d3.select(".ann4").append("tspan").text("Thanks for following along.")
@@ -1635,14 +1641,14 @@ cpLine = function(data,scales){
       .attr("y2",d=>yScale(d))
       .attr("stroke","black")
       .attr("stroke-width",1)
-      .transition().duration(1000).delay((d,i) => 2500 + (i*1000))
-      .delay((d,i) => i*1000)
+      .transition().duration(1000).delay((d,i) => 3500 + (i*1000))
+      // .delay((d,i) => i*1000)
       .attr("x2",(d,i) => i==0 ? cpIndex : w)
       .end().then(function(){
         cpCharDetails();
         setTimeout(tryAgain,6000)
       })
-  }
+  // }
 
   function drawCPLine(container,color,delay){
    container
@@ -1654,13 +1660,13 @@ cpLine = function(data,scales){
    .attr("stroke-width",1)
    .attr("stroke",color)
    .attr("stroke-dasharray",[5,5])
-   .transition().duration(1000).delay(delay).ease(d3.easeLinear)
+   .transition().duration(1500).delay(delay).ease(d3.easeLinear)
    .attr("y2",0)
   }
 
   //Draw CP line through both containers
   drawCPLine(d3.select("#cusumSvg"),"white",0)
-  drawCPLine(baseSvg,"grey",1000)
+  drawCPLine(baseSvg,"grey",1500)
 
 
 
