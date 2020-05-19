@@ -1660,7 +1660,19 @@ cpLine = function(data,scales){
       .attr("x2",(d,i) => i==0 ? cpIndex : w)
       .end().then(function(){
         cpCharDetails();
-        setTimeout(()=>tryAgain("Go Again"),7000)
+        setTimeout(function(){
+          tryAgain("Go Again");
+
+          d3.select(".ann4")
+            .append("tspan")
+            .text("Credts: @krstoffr | variation.com")
+            .attr("dy","3.8em").attr("x",0)
+            .style("font-size","18")
+            .attr("opacity",0)
+            .transition().duration(1000).delay(3500)
+              .attr("opacity",1)
+        },7000)
+
       })
   // }
 
