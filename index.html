@@ -27,7 +27,7 @@
       <div id = "subtitle">Detecting shifts in time-series data</div>
     </div>
     <div id = intro-box>
-      <div class = intro style = "margin-bottom: 10px">How can we tell whether a meaningful change has occurred in a trend? Traditionally, change-detection has involved flagging isolated points that stray from an expected range. While useful for real-time alerting applications, such point-based methods might miss more subtle, sustained shifts that could indicate profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
+      <div class = intro style = "margin-bottom: 10px">How can we tell whether a meaningful change has occurred in a trend? Traditionally, change-detection has involved flagging isolated values that stray from an expected range. While useful for real-time alerting applications, such point-by-point methods might miss more subtle, sustained shifts that could indicate profound changes in the behaviour of a system. Change-point analysis addresses this by capturing patterns formed by sequences of data points, and assessing the likelihood that a change has occured within this sequence.</div>
       <div class = intro style = "margin-bottom: 15px">Follow the steps below,  by clicking the flashing <span id =next-intro-text> next </span> button, to find out more about how change-point analysis works.</div>
     </div>
       <div id="topView" class = "subdiv">
@@ -477,7 +477,7 @@ stepSequencer = function(dict,scales){
       nextStep();
 
       d3.select(".ann4")
-        .text("Alongside our confidence in the change, we can describe other key features of it....such as when it occurred, and how big it was.")
+        .text("Alongside the confidence level, we can describe other key features of the change - such as when it occurred, and how big it was.")
         .call(wrap,300);
 
       ready();
@@ -495,14 +495,14 @@ stepSequencer = function(dict,scales){
             const annotations = [{
                 note: {label: "", wrap:250},
                 x: highestIndex, y: highestValue,
-                dy: -40, dx: 100,
+                dy: -40, dx: 50,
                 subject: {radius: 25},
                 color: "white"
             }]
 
             //Add annotation to the Chart
             const makeAnnotations = d3.annotation()
-              //.editMode(true)
+              // .editMode(true)
               .type(d3.annotationCalloutCircle)
               .annotations(annotations)
             d3.select("#cusumSvg")
@@ -511,9 +511,9 @@ stepSequencer = function(dict,scales){
 
             speech = d3.select("#mainView")
               .append("div").attr("id","cpTimeSpeechDiv").attr("class","speech-box")
-              .style("left",d3.select("#cusumView").node().offsetLeft + xScale(cusumPeak[0].key) + 50)
-              .style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(cusumPeak[0].end) - 30)
-              .append("span").text("The peak of the curve pin-points the moment of change")
+              .style("left",d3.select("#cusumView").node().offsetLeft + xScale(cusumPeak[0].key) + xScale.bandwidth() + 30)
+              .style("top",d3.select("#cusumView").node().offsetTop + yScaleCUSUM(cusumPeak[0].end) - 40)
+              .append("span").text("The peak of the curve pin-points the timing of the change")
 
             d3.select("#cpTimeSpeechDiv")
             .style("margin-top",-d3.select("#cpTimeSpeechDiv").node().offsetHeight/2)
@@ -530,7 +530,6 @@ stepSequencer = function(dict,scales){
       wait();
 
       d3.select("#cpTimeCallout").remove();
-      // d3.select(".annotation-connector").remove();
       d3.select("#cpTimeSpeechDiv").remove();
       cpLine(dict,scales);
     }
@@ -1338,7 +1337,6 @@ shuffleInterval = function(dict,scales){
       shuffleSpeed = 90; sampleSize = 1000;
 
 
-
       if (automate){
         resetOrig();
 
@@ -1492,7 +1490,7 @@ cpResult = function(dict,scales){
   nextStep();
 
   cpExists = cpResultText = parseInt(hitRateNum.text()) >= 95
-  cpResultText = cpExists ? "Hurrah! It looks like we've got a change-point ✔️": "It looks like there's no change here 🤷. Refresh the page to try again.‍"
+  cpResultText = cpExists ? "Hurrah! It looks like we've got a change-point ✔️": "It looks like there's no change here 🤷.‍"
 
   speech = d3.select("#mainView")
     .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",200)
@@ -1504,7 +1502,47 @@ cpResult = function(dict,scales){
   d3.select("#speechDiv")
   .style("margin-top",-d3.select("#speechDiv").node().offsetHeight/2)
 
-  if (cpExists) {ready()}
+
+  tryAgain = function(buttonName){
+    d3.select(".ann4").text("");
+    // PageNum.select("text").text("6")
+
+    d3.select(".ann4").append("tspan").attr("id","endText").text("Thanks for following along.")
+      .attr("opacity",0)
+      .transition().duration(1000)
+        .attr("opacity",1)
+    d3.select(".ann4").append("tspan").text("with a different trend?")
+      .attr("x",80)
+      .attr("dy","1.5em")
+      .attr("opacity",0)
+      .transition().duration(2000).delay(1500)
+        .attr("opacity",1)
+
+    setTimeout(function(){
+        Button(annCont,`${buttonName}`,80,25);
+        ShuffleButton.attr("id","Go-Again");
+        ShuffleButton.select("text").style("opacity",0.8);
+        d3.select("#Go-Again").on("click",function(){
+          location.reload();
+        })
+      },1500)
+
+  }
+
+  if (cpExists){
+    ready();
+    d3.select("#Auto-Shuffle").attr("class","noClick").transition().duration(1000).style("opacity",0.6)
+    d3.select("#Shuffle").attr("class","noClick").transition().duration(1000).style("opacity",0.6)
+  } else {
+    setTimeout(function(){
+      d3.select("#buttonG").remove();
+      tryAgain("Try Again");
+      PageNum.select("text").text("5");
+      d3.select("#endText").text("You didn't get to see the exciting bit.");
+    },1500)
+
+  }
+
 
 
 }
@@ -1603,35 +1641,7 @@ cpLine = function(data,scales){
 
     }
 
-    tryAgain = function(){
-      // d3.select("#buttonG").remove();
-      d3.select(".ann4").text("");
-      // PageNum.select("text").text("6")
 
-      d3.select(".ann4").append("tspan").text("Thanks for following along.")
-        .attr("opacity",0)
-        .transition().duration(1000)
-          .attr("opacity",1)
-      d3.select(".ann4").append("tspan").text("with a different trend?")
-        .attr("x",80)
-        .attr("dy","1.5em")
-        .attr("opacity",0)
-        .transition().duration(2000).delay(1500)
-          .attr("opacity",1)
-
-      setTimeout(function(){
-          Button(annCont,"Go Again",80,25);
-          ShuffleButton.attr("id","Go-Again");
-          ShuffleButton.select("text").style("opacity",0.8);
-          d3.select("#Go-Again").on("click",function(){
-            location.reload();
-          })
-        },1500)
-
-
-
-
-    }
 
     //Draw Segment Means
     svg.append("g").attr("id","cpChar")
@@ -1650,7 +1660,7 @@ cpLine = function(data,scales){
       .attr("x2",(d,i) => i==0 ? cpIndex : w)
       .end().then(function(){
         cpCharDetails();
-        setTimeout(tryAgain,7000)
+        setTimeout(()=>tryAgain("Go Again"),7000)
       })
   // }
 
@@ -1671,7 +1681,6 @@ cpLine = function(data,scales){
   //Draw CP line through both containers
   drawCPLine(d3.select("#cusumSvg"),"white",0)
   drawCPLine(baseSvg,"grey",1500)
-
 
 
 
