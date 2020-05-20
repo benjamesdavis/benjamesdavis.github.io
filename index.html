@@ -1490,7 +1490,7 @@ cpResult = function(dict,scales){
   nextStep();
 
   cpExists = cpResultText = parseInt(hitRateNum.text()) >= 95
-  cpResultText = cpExists ? "Hurrah! It looks like we've got a change-point ✔️": "It looks like there's no change here 🤷.‍"
+  cpResultText = cpExists ? "Hurrah! It looks like we've got a change ✔️": "It looks like there's no change here 🤷.‍"
 
   speech = d3.select("#mainView")
     .append("div").attr("id","speechDiv").attr("class","speech-box sb2").style("width",200)
@@ -1665,7 +1665,7 @@ cpLine = function(data,scales){
 
           d3.select(".ann4")
             .append("tspan")
-            .text("Credts: @krstoffr | variation.com")
+            .text("Credits: @krstoffr | variation.com")
             .attr("dy","3.8em").attr("x",0)
             .style("font-size","18")
             .attr("opacity",0)
